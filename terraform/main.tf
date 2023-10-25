@@ -152,12 +152,11 @@ resource "local_file" "private_key_pem" {
   content  = tls_private_key.key.private_key_pem
   filename = "${var.key_pair}.pem"
 
+  # Sets permissions on key and adds it to ssh-agent when terraform apply is run
   provisioner "local-exec" {
-    command = "chmod 400 ${var.key_pair}.pem && ssh-add ${var.key_pair}.pem"  
+    command = "chmod 400 ${var.key_pair}.pem && ssh-add ${var.key_pair}.pem"
   }
-
 }
-
 resource "aws_key_pair" "key" {
   key_name   = var.key_pair
   public_key = tls_private_key.key.public_key_openssh
