@@ -21,3 +21,14 @@ swagger.yaml
 
 # Debug folder
 .vscode
+
+# Terraform 
+.terraform/
+.terraform.*
+*.pem
+*.tfstate
+*.tfstate.backup
+*.tfvars
+
+# Python Environment
+.venv/
