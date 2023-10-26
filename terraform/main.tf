@@ -154,8 +154,8 @@ resource "tls_private_key" "key" {
 }
 
 resource "local_file" "private_key_pem" {
-  content  = tls_private_key.key.private_key_pem
-  filename = "${var.key_pair}.pem"
+  content         = tls_private_key.key.private_key_pem
+  filename        = "${var.key_pair}.pem"
   file_permission = "0400"
 
   # Adds the private key to the ssh-agent
