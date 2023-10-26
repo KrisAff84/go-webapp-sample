@@ -48,6 +48,11 @@ EOF
   iam_instance_profile = aws_iam_instance_profile.ec2_bucket_profile.name
 }
 
+resource "local_file" "public_ip" {
+  filename = "Jenkins_Public_IP.txt"
+  content  = "Web Access: ${aws_instance.jenkins_server.public_ip}:8080\nSSH Access: ssh ubuntu@${aws_instance.jenkins_server.public_ip}"
+}
+
 #####################################
 # Instance Security Group
 #####################################
@@ -151,10 +156,11 @@ resource "tls_private_key" "key" {
 resource "local_file" "private_key_pem" {
   content  = tls_private_key.key.private_key_pem
   filename = "${var.key_pair}.pem"
+  file_permission = "0400"
 
-  # Sets permissions on key and adds it to ssh-agent when terraform apply is run
+  # Adds the private key to the ssh-agent
   provisioner "local-exec" {
-    command = "chmod 400 ${var.key_pair}.pem && ssh-add ${var.key_pair}.pem"
+    command = "ssh-add ${var.key_pair}.pem"
   }
 }
 resource "aws_key_pair" "key" {
