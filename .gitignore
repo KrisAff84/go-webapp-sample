@@ -29,6 +29,7 @@ swagger.yaml
 *.tfstate
 *.tfstate.backup
 *.tfvars
+Jenkins_Public_IP.txt
 
 # Python Environment
 .venv/

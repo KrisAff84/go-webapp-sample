@@ -26,7 +26,10 @@ data "aws_vpc" "default" {
 resource "aws_instance" "jenkins_server" {
   ami                    = var.ami
   instance_type          = var.instance_type
-  vpc_security_group_ids = [aws_security_group.jenkins_server_sg.id]
+  vpc_security_group_ids = [
+    aws_security_group.jenkins_server_sg.id,
+    aws_security_group.prometheus_sg.id
+    ]
   key_name               = var.key_pair
   tags = {
     Name = "Jenkins_Server"
@@ -54,7 +57,7 @@ resource "local_file" "public_ip" {
 }
 
 #####################################
-# Instance Security Group
+# Instance Security Groups
 #####################################
 
 resource "aws_security_group" "jenkins_server_sg" {
@@ -74,6 +77,26 @@ resource "aws_security_group" "jenkins_server_sg" {
     to_port     = "22"
     protocol    = "tcp"
     cidr_blocks = [var.my_ip]
+  }
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+}
+
+resource "aws_security_group" "prometheus_sg" {
+  name        = "prometheus_inbound"
+  description = "Allow web access to port 9090"
+  vpc_id      = data.aws_vpc.default.id
+  ingress {
+    description = "Allow 9090 from the Internet"
+    from_port   = 9090
+    to_port     = 9090
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
   egress {
     from_port        = 0
