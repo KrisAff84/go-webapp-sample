@@ -90,12 +90,12 @@ def get_public_ip(instanceID):
             print(ssh_access)
             print(web_access)
 
-        with open('../terraform/Jenkins_Public_IP.txt', 'r') as file:
+        with open('terraform/Jenkins_Public_IP.txt', 'r') as file:
             lines = file.readlines()
             lines[0] = f'{ssh_access}\n'
             lines[1] = f'{web_access}\n'
 
-        with open('../terraform/Jenkins_Public_IP.txt', 'w') as file:
+        with open('terraform/Jenkins_Public_IP.txt', 'w') as file:
             file.writelines(lines)
 
 
